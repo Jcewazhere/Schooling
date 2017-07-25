@@ -1,0 +1,38 @@
+	; **********************************
+	;  File: Vowels.s
+	;  Programmer: Jamie Edwards
+	;  Description: A Program to capitalize vowels, then
+        ;  output the new string along with a counter for the
+        ;  vowels.
+	;  Project: Vowels.arj               
+	;  Date: 2/25/14
+	;************************************
+	
+	AREA PrintText, CODE, READONLY
+SWI_WriteC	EQU	&0     ;output character in r0 
+SWI_Exit	EQU	&11    ;finish program
+		ENTRY
+	
+		BL  Print	;call print subroutine
+		=   "In phonetics, a vowel is a sound in spoken language, such as an English ah! or oh!, pronounced with an open vocal tract",&0a,&0d,0   
+		ALIGN
+		SWI 	SWI_Exit	;finish
+Print		LDRB	r0,[r14], #1	;get a character
+                MOV     r12, #0         ;store 0 in r12
+                TEQ     r0, #'a'        ;check for a
+                TEQNE   r0, #'e'        ;check for e
+                TEQNE   r0, #'i'        ;check for i 
+                TEQNE   r0, #'o'        ;check for o
+                TEQNE   r0, #'u'        ;check for u
+                ANDEQ   r0, r0, #&df    ;capitalize the vowel if present  
+                TEQNE   r0, #'A'        ;check for A
+                TEQNE   r0, #'E'        ;check for E
+                TEQNE   r0, #'I'        ;check for I 
+                TEQNE   r0, #'O'        ;check for O
+                TEQNE   r0, #'U'        ;check for U
+                ADDEQ   r12, r12, #1    ;add 1 to r12 to count vowels
+		CMP 	r0, #'0'	;end mark NUL?
+		SWINE 	SWI_WriteC	;if not, print
+		BNE	Print
+		MOV	pc, r14		;return
+ 		END	
